@@ -10,7 +10,8 @@ import Foundation
 import RxSwift
 
 protocol APIServicing {
-  func getPopularTvShows(page: Int) -> Single<TvShowResponseModel>
+  func getPopularMovies(page: Int) -> Single<PopularMoviesResponseModel>
+  func getMovieGenres() -> Single<GenreResponseModel>
 }
 
 final class APIService: APIServicing {
@@ -28,8 +29,8 @@ final class APIService: APIServicing {
     self.apiKeyManager = apiKeyManager
   }
 
-  // Used to get popular tv shows via using Movie Database API
-  func getPopularTvShows(page: Int) -> Single<TvShowResponseModel> {
+  // Used to get popular movies via using Movie Database API
+  func getPopularMovies(page: Int) -> Single<PopularMoviesResponseModel> {
     return Single.create { single in
       self.apiKeyManager.tmdbApiKey { [weak self] apiKey in
         guard let self = self else {
@@ -39,7 +40,7 @@ final class APIService: APIServicing {
           return single(.failure(ApiError.invalidKey))
         }
         
-        let result: Single<TvShowResponseModel> = self.buildRequest(
+        let result: Single<PopularMoviesResponseModel> = self.buildRequest(
           convertible: Router.getPopularTvShows(
             apiKey: apiKey,
             page: page,
@@ -49,8 +50,39 @@ final class APIService: APIServicing {
 
         let _ = result.subscribe { event in
           switch event {
-          case .success(let tvShowResponse):
-            single(.success(tvShowResponse))
+          case .success(let moviesResponse):
+            single(.success(moviesResponse))
+          case .failure(let error):
+            single(.failure(error))
+          }
+        }
+      }
+      return Disposables.create()
+    }
+  }
+
+  // Used to get movie genres
+  func getMovieGenres() -> Single<GenreResponseModel> {
+    return Single.create { single in
+      self.apiKeyManager.tmdbApiKey { [weak self] apiKey in
+        guard let self = self else {
+          return
+        }
+        guard let apiKey = apiKey else {
+          return single(.failure(ApiError.invalidKey))
+        }
+        
+        let result: Single<GenreResponseModel> = self.buildRequest(
+          convertible: Router.getGenres(
+            apiKey: apiKey,
+            language: Locale.preferredLanguages[0]
+          )
+        )
+
+        let _ = result.subscribe { event in
+          switch event {
+          case .success(let genreResponse):
+            single(.success(genreResponse))
           case .failure(let error):
             single(.failure(error))
           }

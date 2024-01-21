@@ -7,12 +7,11 @@
 
 import Foundation
 
-struct TvShowDomainModel: Decodable {
+struct MovieDomainModel: Decodable {
   let id: Int
-  let adult: Bool
-  let backdropPath, originalLanguage, originalName, overview, posterPath, firstAirDate, name: String?
+  let adult, video: Bool
+  let backdropPath, originalLanguage, originalTitle, overview, posterPath, releaseDate, title: String?
   let genreIds: [Int]?
-  let originCountry: [String]
   let popularity: Double
   let voteAverage: Double
   let voteCount: Double
@@ -22,14 +21,14 @@ struct TvShowDomainModel: Decodable {
     case adult
     case backdropPath = "backdrop_path"
     case genreIds = "genre_ids"
-    case originCountry = "origin_country"
     case originalLanguage = "original_language"
-    case originalName = "original_name"
+    case originalTitle = "original_title"
     case overview
     case popularity
     case posterPath = "poster_path"
-    case firstAirDate = "first_air_date"
-    case name
+    case releaseDate = "release_date"
+    case title
+    case video
     case voteAverage = "vote_average"
     case voteCount = "vote_count"
   }

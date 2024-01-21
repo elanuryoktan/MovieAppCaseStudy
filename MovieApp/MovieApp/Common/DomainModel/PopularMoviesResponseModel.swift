@@ -7,9 +7,9 @@
 
 import Foundation
 
-struct TvShowResponseModel: Decodable {
+struct PopularMoviesResponseModel: Decodable {
   let page: Int
-  let results: [TvShowDomainModel]
+  let results: [MovieDomainModel]
   let totalPages: Int
   let totalResults: Int
     

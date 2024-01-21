@@ -9,11 +9,14 @@ import UIKit
 
 class ViewController: UIViewController {
 
+  private let apiKeyManager: ApiKeyManaging = ApiKeyManager()
+
   override func viewDidLoad() {
     super.viewDidLoad()
     // Do any additional setup after loading the view.
+    apiKeyManager.tmdbApiKey { apiKey in
+      print(apiKey)
+    }
   }
-
-
 }
 

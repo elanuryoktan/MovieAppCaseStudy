@@ -7,6 +7,8 @@ target 'MovieApp' do
   # Pods for MovieApp
   pod 'Firebase/Crashlytics'
   pod 'FirebaseFirestore'
+  pod 'Alamofire'
+  pod 'RxSwift'
 
   target 'MovieAppTests' do
     inherit! :search_paths

@@ -20,11 +20,18 @@ final class ApiKeyManager: ApiKeyManaging {
     static let documentName = "api_key_config"
     static let keyName = "apiKey"
   }
+  
+  private var apiKey: String?
 
   func tmdbApiKey(completion: @escaping (String?) -> Void) {
-    fetchApiKeyFromFirestore { apiKey in
-      completion(apiKey)
+    // TODO: use userdefaults or keychain to store apiKey locally
+    guard let apiKey = apiKey else {
+      fetchApiKeyFromFirestore { apiKey in
+        completion(apiKey)
+      }
+      return
     }
+    completion(apiKey)
   }
 }
 

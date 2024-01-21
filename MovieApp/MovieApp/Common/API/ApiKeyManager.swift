@@ -20,12 +20,15 @@ final class ApiKeyManager: ApiKeyManaging {
     static let documentName = "api_key_config"
     static let keyName = "apiKey"
   }
-  
-  private var apiKey: String?
+
+  private let userDefaultsManager: UserDefaultsManaging
+
+  init(userDefaultsManager: UserDefaultsManaging) {
+    self.userDefaultsManager = userDefaultsManager
+  }
 
   func tmdbApiKey(completion: @escaping (String?) -> Void) {
-    // TODO: use userdefaults or keychain to store apiKey locally
-    guard let apiKey = apiKey else {
+    guard let apiKey = getApiKeyFromUserDefaults() else {
       fetchApiKeyFromFirestore { apiKey in
         completion(apiKey)
       }
@@ -36,14 +39,20 @@ final class ApiKeyManager: ApiKeyManaging {
 }
 
 private extension ApiKeyManager {
+  // Helper function to get API key from user defaults
+  func getApiKeyFromUserDefaults() -> String? {
+    return userDefaultsManager.getApiKey()
+  }
+
   // Helper function to fetch API key from Firestore
   func fetchApiKeyFromFirestore(completion: @escaping (String?) -> Void) {
     let db = Firestore.firestore()
     let configurationsRef = db.collection(Constants.collectionName).document(Constants.documentName)
     
-    configurationsRef.getDocument { document, error in
-      if let document = document, document.exists {
-        let apiKey = document.data()?[Constants.keyName] as? String
+    configurationsRef.getDocument { [weak self] document, error in
+      guard let self = self else { return }
+      if let document = document, document.exists, let apiKey = document.data()?[Constants.keyName] as? String {
+        self.userDefaultsManager.setApiKey(apiKey: apiKey)
         completion(apiKey)
       } else {
         completion(nil)

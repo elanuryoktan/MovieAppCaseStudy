@@ -7,6 +7,7 @@
 
 import Foundation
 
+// sourcery: AutoMockable
 protocol UserDefaultsManaging {
   func getApiKey() -> String?
   func setApiKey(apiKey: String)

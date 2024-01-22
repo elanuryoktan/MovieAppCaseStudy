@@ -10,6 +10,7 @@ import FirebaseFirestore
 
 // The ApiKeyManager is designed to securely manage the retrieval of the TMDB API key used in the application.
 // Instead of hardcoding the key in the source code, it dynamically fetches the key from Firestore.
+// sourcery: AutoMockable
 protocol ApiKeyManaging {
   func tmdbApiKey(completion: @escaping (String?) -> Void)
 }

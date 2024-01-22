@@ -9,6 +9,7 @@ import Alamofire
 import Foundation
 import RxSwift
 
+// sourcery: AutoMockable
 protocol APIServicing {
   func getPopularMovies(page: Int) -> Single<PopularMoviesResponseModel>
   func getMovieGenres() -> Single<GenreResponseModel>

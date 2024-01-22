@@ -9,6 +9,7 @@ target 'MovieApp' do
   pod 'FirebaseFirestore'
   pod 'Alamofire'
   pod 'RxSwift'
+  pod 'Kingfisher'
 
   target 'MovieAppTests' do
     inherit! :search_paths

@@ -6,16 +6,24 @@
 //
 
 import Foundation
+import Kingfisher
 import UIKit
 
 class MovieCollectionViewCell: UICollectionViewCell {
-  private let containerView: UIView = {
-    let view = UIView()
-    view.translatesAutoresizingMaskIntoConstraints = false
-    view.layer.borderWidth = 1
-    view.layer.borderColor = UIColor.gray.cgColor
-    view.layer.cornerRadius = 10
-    return view
+  private lazy var containerView: UIStackView = {
+    let stackView = UIStackView()
+    stackView.translatesAutoresizingMaskIntoConstraints = false
+    stackView.layer.borderWidth = 1
+    stackView.layer.borderColor = UIColor.gray.cgColor
+    stackView.layer.cornerRadius = 10
+    stackView.axis = .horizontal
+    stackView.alignment = .center
+    stackView.spacing = 16
+    stackView.layoutMargins = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
+    stackView.isLayoutMarginsRelativeArrangement = true
+    stackView.addArrangedSubview(posterImageView)
+    stackView.addArrangedSubview(titleLabel)
+    return stackView
   }()
   
   private let titleLabel : UILabel = {
@@ -26,6 +34,16 @@ class MovieCollectionViewCell: UICollectionViewCell {
     label.textAlignment = .left
     label.numberOfLines = 0
     return label
+  }()
+  
+  private let posterImageView: UIImageView = {
+    let imageView = UIImageView()
+    imageView.translatesAutoresizingMaskIntoConstraints = false
+    imageView.contentMode = UIView.ContentMode.scaleAspectFill
+    imageView.clipsToBounds = true
+    imageView.image = UIImage(named: "moviePlaceholder")
+    imageView.layer.cornerRadius = 10
+    return imageView
   }()
 
   @available(*, unavailable)
@@ -44,23 +62,23 @@ class MovieCollectionViewCell: UICollectionViewCell {
 
   func configure(with viewModel: MovieViewModel) {
     titleLabel.text = viewModel.title
+    if let imgUrl = viewModel.imageUrl {
+      posterImageView.kf.setImage(with: imgUrl)
+    }
   }
 }
 
 private extension MovieCollectionViewCell {
   func setUp() {
     contentView.addSubview(containerView)
-    containerView.addSubview(titleLabel)
-
+    
     NSLayoutConstraint.activate([
       containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
       containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
       containerView.topAnchor.constraint(equalTo: contentView.topAnchor),
       containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-      titleLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 16),
-      titleLabel.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -16),
-      titleLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 8),
-      titleLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -8)
+      posterImageView.heightAnchor.constraint(equalToConstant: 80),
+      posterImageView.widthAnchor.constraint(equalToConstant: 80)
     ])
   }
 }

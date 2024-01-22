@@ -762,6 +762,7 @@ PODS:
     - BoringSSL-GRPC (= 0.0.24)
     - gRPC-Core/Interface (= 1.49.1)
   - gRPC-Core/Interface (1.49.1)
+  - Kingfisher (7.10.2)
   - leveldb-library (1.22.2)
   - nanopb (2.30909.1):
     - nanopb/decode (= 2.30909.1)
@@ -780,6 +781,7 @@ DEPENDENCIES:
   - Alamofire
   - Firebase/Crashlytics
   - FirebaseFirestore
+  - Kingfisher
   - RxSwift
   - Sourcery (= 2.1.1)
 
@@ -803,6 +805,7 @@ SPEC REPOS:
     - GoogleUtilities
     - "gRPC-C++"
     - gRPC-Core
+    - Kingfisher
     - leveldb-library
     - nanopb
     - PromisesObjC
@@ -829,6 +832,7 @@ SPEC CHECKSUMS:
   GoogleUtilities: 0759d1a57ebb953965c2dfe0ba4c82e95ccc2e34
   "gRPC-C++": 2df8cba576898bdacd29f0266d5236fa0e26ba6a
   gRPC-Core: a21a60aefc08c68c247b439a9ef97174b0c54f96
+  Kingfisher: 99edc495d3b7607e6425f0d6f6847b2abd6d716d
   leveldb-library: f03246171cce0484482ec291f88b6d563699ee06
   nanopb: d4d75c12cd1316f4a64e3c6963f879ecd4b5e0d5
   PromisesObjC: c50d2056b5253dadbd6c2bea79b0674bd5a52fa4
@@ -836,6 +840,6 @@ SPEC CHECKSUMS:
   RxSwift: a4b44f7d24599f674deebd1818eab82e58410632
   Sourcery: 3a6e2e9bd439caeee302e8150dc712d2f8ef45b3
 
-PODFILE CHECKSUM: d600c0c501fe61395b3a41a95486c4e903d7a535
+PODFILE CHECKSUM: 239bebe9712addedcbf4e7bc6334d3f56e67a371
 
 COCOAPODS: 1.14.3

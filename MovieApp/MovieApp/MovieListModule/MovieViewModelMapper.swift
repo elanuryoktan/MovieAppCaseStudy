@@ -12,10 +12,18 @@ protocol MovieViewModelMapping {
 }
 
 final class MovieViewModelMapper: MovieViewModelMapping {
+  enum Constants {
+    static let imageBaseURL = "https://image.tmdb.org/t/p/w500"
+  }
+
   func movieViewModel(domainModel: MovieDomainModel) -> MovieViewModel {
+    var imageUrl: URL?
+    if let path = domainModel.backdropPath {
+      imageUrl = URL(string: Constants.imageBaseURL + path)
+    }
     return MovieViewModel(
       title: domainModel.title ?? domainModel.originalTitle ?? "",
-      imageUrl: domainModel.backdropPath
+      imageUrl: imageUrl
     )
   }
 }

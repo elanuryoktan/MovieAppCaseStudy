@@ -9,7 +9,7 @@ import Foundation
 
 struct MovieViewModel: Hashable {
   let title: String
-  let imageUrl: String?
+  let imageUrl: URL?
 }
 
 extension MovieViewModel {

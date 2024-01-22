@@ -10,12 +10,14 @@ import RxSwift
 
 protocol MovieLisViewModelling {
   var movies: PublishSubject<[MovieViewModel]> { get }
-  func fetchMovies()
+  func onViewSetUp()
+  func onLoadNextPage()
 }
 
 final class MovieListViewModel: MovieLisViewModelling {
   var movies = PublishSubject<[MovieViewModel]>()
   
+  private var movieList: [MovieViewModel] = []
   private var apiService: APIServicing
   private var mapper: MovieViewModelMapping
   private var currentPage: Int = 1
@@ -27,9 +29,19 @@ final class MovieListViewModel: MovieLisViewModelling {
   ) {
     self.apiService = apiService
     self.mapper = mapper
+  }
+
+  func onViewSetUp() {
     fetchMovies()
   }
   
+  func onLoadNextPage() {
+    currentPage += 1
+    fetchMovies()
+  }
+}
+
+private extension MovieListViewModel {
   func fetchMovies() {
     apiService.getPopularMovies(page: currentPage)
       .observe(on: MainScheduler.asyncInstance)
@@ -41,6 +53,7 @@ final class MovieListViewModel: MovieLisViewModelling {
       .subscribe(
         onSuccess: { [weak self] movieList in
           guard let self = self else { return }
+          self.movieList.append(contentsOf: movieList)
           movies.onNext(movieList)
         },
         onFailure: { _ in

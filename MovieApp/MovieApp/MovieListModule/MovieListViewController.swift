@@ -23,6 +23,7 @@ final class MovieListViewController: UIViewController {
 
   private var viewModel: MovieListViewModel!
   private var dataSource: UICollectionViewDiffableDataSource<SectionType, MovieViewModel>!
+  private var snapshot = NSDiffableDataSourceSnapshot<SectionType, MovieViewModel>()
   private let disposeBag = DisposeBag()
 
   private var moviesCollectionView: UICollectionView = {
@@ -51,6 +52,7 @@ final class MovieListViewController: UIViewController {
       mapper: mapper
     )
     setUpObservers()
+    viewModel.onViewSetUp()
   }
 }
 
@@ -104,8 +106,9 @@ private extension MovieListViewController {
   }
 
   func applySnapshot(movies: [MovieViewModel]) {
-    var snapshot = NSDiffableDataSourceSnapshot<SectionType, MovieViewModel>()
-    snapshot.appendSections([.movie])
+    if snapshot.indexOfSection(.movie) == nil {
+      snapshot.appendSections([.movie])
+    }
     snapshot.appendItems(movies, toSection: .movie)
     dataSource.apply(snapshot, animatingDifferences: true)
   }
@@ -124,5 +127,11 @@ extension MovieListViewController: UICollectionViewDelegateFlowLayout {
   
   func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
     return UIEdgeInsets(top: 8, left: 0, bottom: 0, right: 0)
+  }
+  
+  func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    if (scrollView.contentOffset.y + scrollView.frame.size.height) > scrollView.contentSize.height {
+      viewModel.onLoadNextPage()
+    }
   }
 }

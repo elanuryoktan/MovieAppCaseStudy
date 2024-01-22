@@ -57,8 +57,8 @@ private extension MovieCollectionViewCell {
       containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
       containerView.topAnchor.constraint(equalTo: contentView.topAnchor),
       containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-      titleLabel.topAnchor.constraint(equalTo: containerView.topAnchor),
-      titleLabel.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
+      titleLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 16),
+      titleLabel.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -16),
       titleLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 8),
       titleLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -8)
     ])

@@ -12,6 +12,7 @@ protocol MovieLisViewModelling {
   var movies: PublishSubject<[MovieViewModel]> { get }
   func onViewSetUp()
   func onLoadNextPage()
+  func movieViewModel(for index: Int) -> MovieViewModel?
 }
 
 final class MovieListViewModel: MovieLisViewModelling {
@@ -38,6 +39,13 @@ final class MovieListViewModel: MovieLisViewModelling {
   func onLoadNextPage() {
     currentPage += 1
     fetchMovies()
+  }
+
+  func movieViewModel(for index: Int) -> MovieViewModel? {
+    guard index < movieList.count else {
+      return nil
+    }
+    return movieList[index]
   }
 }
 

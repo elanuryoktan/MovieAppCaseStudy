@@ -121,8 +121,17 @@ extension MovieListViewController: UICollectionViewDelegateFlowLayout {
     sizeForItemAt indexPath: IndexPath
   ) -> CGSize {
     let width = collectionView.frame.width
-    // TODO: dynamic sized cell
-    return CGSize(width: width, height: 50.0)
+    guard let movieViewModel = viewModel.movieViewModel(for: indexPath.row) else {
+      return CGSize(width: width, height: 50.0)
+    }
+    let cell = MovieCollectionViewCell()
+    cell.configure(with: movieViewModel)
+    let cellSize = cell.systemLayoutSizeFitting(
+      CGSize(width: width, height: 0),
+      withHorizontalFittingPriority: .required,
+      verticalFittingPriority: .fittingSizeLevel
+    )
+    return cellSize
   }
   
   func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {

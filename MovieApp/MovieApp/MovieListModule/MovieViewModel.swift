@@ -10,6 +10,7 @@ import Foundation
 struct MovieViewModel: Hashable {
   let title: String
   let imageUrl: URL?
+  let rating: Double
 }
 
 extension MovieViewModel {

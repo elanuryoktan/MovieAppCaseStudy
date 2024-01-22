@@ -23,7 +23,8 @@ final class MovieViewModelMapper: MovieViewModelMapping {
     }
     return MovieViewModel(
       title: domainModel.title ?? domainModel.originalTitle ?? "",
-      imageUrl: imageUrl
+      imageUrl: imageUrl,
+      rating: domainModel.voteAverage
     )
   }
 }

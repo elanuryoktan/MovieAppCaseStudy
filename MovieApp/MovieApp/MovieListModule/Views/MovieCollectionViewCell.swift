@@ -23,7 +23,19 @@ class MovieCollectionViewCell: UICollectionViewCell {
     stackView.layoutMargins = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
     stackView.isLayoutMarginsRelativeArrangement = true
     stackView.addArrangedSubview(posterImageView)
+    stackView.addArrangedSubview(infoStackView)
+    return stackView
+  }()
+
+  private lazy var infoStackView: UIStackView = {
+    let stackView = UIStackView()
+    stackView.translatesAutoresizingMaskIntoConstraints = false
+    stackView.axis = .vertical
+    stackView.alignment = .leading
+    stackView.spacing = 16
+    stackView.isLayoutMarginsRelativeArrangement = true
     stackView.addArrangedSubview(titleLabel)
+    stackView.addArrangedSubview(starStackView)
     return stackView
   }()
   
@@ -47,6 +59,32 @@ class MovieCollectionViewCell: UICollectionViewCell {
     return imageView
   }()
 
+  private lazy var starStackView: UIStackView = {
+    let stackView = UIStackView()
+    stackView.translatesAutoresizingMaskIntoConstraints = false
+    stackView.axis = .horizontal
+    stackView.alignment = .center
+    stackView.spacing = 4
+    stackView.isLayoutMarginsRelativeArrangement = true
+    stackView.addArrangedSubview(starRatingView)
+    stackView.addArrangedSubview(ratingLabel)
+    return stackView
+  }()
+
+  private var starRatingView: StarRatingView = {
+    let view = StarRatingView()
+    return view
+  }()
+
+  private var ratingLabel: UILabel = {
+    let label = UILabel()
+    label.translatesAutoresizingMaskIntoConstraints = false
+    label.textColor = UIColor.secondaryText
+    label.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+    label.textAlignment = .left
+    return label
+  }()
+
   @available(*, unavailable)
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
@@ -66,6 +104,8 @@ class MovieCollectionViewCell: UICollectionViewCell {
     if let imgUrl = viewModel.imageUrl {
       posterImageView.kf.setImage(with: imgUrl)
     }
+    starRatingView.setRate(rating: viewModel.rating)
+    ratingLabel.text = String(format: "%.1f", viewModel.rating)
   }
 }
 

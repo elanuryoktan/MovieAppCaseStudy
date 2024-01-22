@@ -1,5 +1,5 @@
 //
-//  TvShowDomainModel.swift
+//  MovieDomainModel.swift
 //  MovieApp
 //
 //  Created by Elanur Yoktan on 21.01.2024.

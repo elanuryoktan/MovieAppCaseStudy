@@ -1,5 +1,5 @@
 //
-//  TvShowResponseModel.swift
+//  PopularMoviesResponseModel.swift
 //  MovieApp
 //
 //  Created by Elanur Yoktan on 21.01.2024.

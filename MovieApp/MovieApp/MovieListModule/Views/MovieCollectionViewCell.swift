@@ -13,8 +13,9 @@ class MovieCollectionViewCell: UICollectionViewCell {
   private lazy var containerView: UIStackView = {
     let stackView = UIStackView()
     stackView.translatesAutoresizingMaskIntoConstraints = false
+    stackView.backgroundColor = UIColor.cellBackground
     stackView.layer.borderWidth = 1
-    stackView.layer.borderColor = UIColor.gray.cgColor
+    stackView.layer.borderColor = UIColor.border.cgColor
     stackView.layer.cornerRadius = 10
     stackView.axis = .horizontal
     stackView.alignment = .center
@@ -29,7 +30,7 @@ class MovieCollectionViewCell: UICollectionViewCell {
   private let titleLabel : UILabel = {
     let label = UILabel()
     label.translatesAutoresizingMaskIntoConstraints = false
-    label.textColor = UIColor.black
+    label.textColor = UIColor.primaryText
     label.font = UIFont.systemFont(ofSize: 16, weight: .bold)
     label.textAlignment = .left
     label.numberOfLines = 0

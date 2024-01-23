@@ -43,8 +43,12 @@ final class MovieDetailViewModel: MovieDetailViewModelling {
 
   func movieDetails(for index: Int, cell: UICollectionViewCell) -> MovieDetails? {
     var sectionType: DetailsSectionType?
-    if let cell = cell as? PosterCollectionViewCell {
+    if let _ = cell as? PosterCollectionViewCell {
       sectionType = .poster
+    } else if let _ = cell as? OverviewCollectionViewCell {
+      sectionType = .overview
+    } else if let _ = cell as? TitleDetailCollectionViewCell {
+      sectionType = .title
     }
     
     guard let sectionType = sectionType else {

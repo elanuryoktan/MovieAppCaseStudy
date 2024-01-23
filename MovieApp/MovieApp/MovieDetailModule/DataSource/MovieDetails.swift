@@ -26,22 +26,3 @@ public class MovieDetails: NSObject {
     }
   }
 }
-
-final class PosterDetail: MovieDetails {
-  let id: String
-  let imageUrl: URL?
-  
-  init(
-    id: String? = nil,
-    imageUrl: URL?
-  ) {
-    self.id = id ?? UUID().uuidString
-    self.imageUrl = imageUrl
-  }
-}
-
-extension PosterDetail: DiffableModel {
-  var identifier: String {
-    id
-  }
-}

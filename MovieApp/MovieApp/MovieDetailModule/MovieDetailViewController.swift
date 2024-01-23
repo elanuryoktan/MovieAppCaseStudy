@@ -13,6 +13,7 @@ import UIKit
 enum DetailsSectionType: Int, CaseIterable {
   case poster
   case overview
+  case title
 }
 
 final class MovieDetailViewController: UIViewController {
@@ -76,9 +77,12 @@ private extension MovieDetailViewController {
   }
 
   func setUpCollectionViewDataSource() {
-    // Create data source for collection view
+    // Register cells
     movieDetailsCollectionView.register(PosterCollectionViewCell.self, forCellWithReuseIdentifier: "PosterCollectionViewCell")
+    movieDetailsCollectionView.register(TitleDetailCollectionViewCell.self, forCellWithReuseIdentifier: "TitleDetailCollectionViewCell")
+    movieDetailsCollectionView.register(OverviewCollectionViewCell.self, forCellWithReuseIdentifier: "OverviewCollectionViewCell")
 
+    // Create data source for collection view
     dataSource = UICollectionViewDiffableDataSource<DetailsSectionType, MovieDetails>(
       collectionView: movieDetailsCollectionView
     ) { collectionView, indexPath, item in
@@ -89,6 +93,24 @@ private extension MovieDetailViewController {
 
         // Configure cell ui elements with view model data
         cell.configure(with: posterModel)
+
+        return cell
+      } else if let overviewModel = item as? OverviewDetail {
+        let cell = collectionView.dequeueReusableCell(
+          withReuseIdentifier: "OverviewCollectionViewCell", for: indexPath
+        ) as! OverviewCollectionViewCell
+
+        // Configure cell ui elements with view model data
+        cell.configure(with: overviewModel)
+
+        return cell
+      } else if let titleModel = item as? TitleDetail {
+        let cell = collectionView.dequeueReusableCell(
+          withReuseIdentifier: "TitleDetailCollectionViewCell", for: indexPath
+        ) as! TitleDetailCollectionViewCell
+
+        // Configure cell ui elements with view model data
+        cell.configure(with: titleModel)
 
         return cell
       }
@@ -140,4 +162,13 @@ extension MovieDetailViewController: UICollectionViewDelegateFlowLayout {
     )
     return cellSize
   }
+  
+  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+    return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+  }
+  
+  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+    return 0
+  }
+  
 }

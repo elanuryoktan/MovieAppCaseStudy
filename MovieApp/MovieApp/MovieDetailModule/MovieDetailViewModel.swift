@@ -22,6 +22,7 @@ final class MovieDetailViewModel: MovieDetailViewModelling {
   private var apiService: APIServicing
   private var mapper: MovieDetailsMapping
   private var domainModel: MovieDomainModel
+  private var disposeBag = DisposeBag()
 
   init(
     apiService: APIServicing,
@@ -36,9 +37,23 @@ final class MovieDetailViewModel: MovieDetailViewModelling {
   func loadDetails() {
     // TODO: fetch genres
     // TODO: fetch cast members
-    let dataSource = mapper.movieDetails(domainModel: domainModel)
+    let dataSource = mapper.movieDetails(domainModel: domainModel, genres: [])
     movieDetailsList.append(contentsOf: dataSource)
     movieDetails.onNext(dataSource)
+    
+    apiService.getMovieGenres()
+      .observe(on: MainScheduler.asyncInstance)
+      .subscribe(
+        onSuccess: { [weak self] genreResponseModel in
+          guard let self = self else { return }
+          let dataSource = mapper.movieDetails(domainModel: domainModel, genres: genreResponseModel.genres)
+          movieDetailsList.removeAll()
+          movieDetailsList.append(contentsOf: dataSource)
+          movieDetails.onNext(dataSource)
+        },
+        onFailure: { _ in }
+      )
+      .disposed(by: disposeBag)
   }
 
   func movieDetails(for index: Int, cell: UICollectionViewCell) -> MovieDetails? {
@@ -49,6 +64,8 @@ final class MovieDetailViewModel: MovieDetailViewModelling {
       sectionType = .overview
     } else if let _ = cell as? TitleDetailCollectionViewCell {
       sectionType = .title
+    } else if let _ = cell as? GenreDetailCollectionViewCell {
+      sectionType = .genre
     }
     
     guard let sectionType = sectionType else {

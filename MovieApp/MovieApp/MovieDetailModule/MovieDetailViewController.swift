@@ -14,6 +14,7 @@ enum DetailsSectionType: Int, CaseIterable {
   case poster
   case overview
   case title
+  case genre
 }
 
 final class MovieDetailViewController: UIViewController {
@@ -23,7 +24,6 @@ final class MovieDetailViewController: UIViewController {
   
   var movieDomainModel: MovieDomainModel?
   private var dataSource: UICollectionViewDiffableDataSource<DetailsSectionType, MovieDetails>!
-  private var snapshot = NSDiffableDataSourceSnapshot<DetailsSectionType, MovieDetails>()
   private let disposeBag = DisposeBag()
 
   private var movieDetailsCollectionView: UICollectionView = {
@@ -80,6 +80,7 @@ private extension MovieDetailViewController {
     // Register cells
     movieDetailsCollectionView.register(PosterCollectionViewCell.self, forCellWithReuseIdentifier: "PosterCollectionViewCell")
     movieDetailsCollectionView.register(TitleDetailCollectionViewCell.self, forCellWithReuseIdentifier: "TitleDetailCollectionViewCell")
+    movieDetailsCollectionView.register(GenreDetailCollectionViewCell.self, forCellWithReuseIdentifier: "GenreDetailCollectionViewCell")
     movieDetailsCollectionView.register(OverviewCollectionViewCell.self, forCellWithReuseIdentifier: "OverviewCollectionViewCell")
 
     // Create data source for collection view
@@ -113,6 +114,15 @@ private extension MovieDetailViewController {
         cell.configure(with: titleModel)
 
         return cell
+      } else if let genreModel = item as? GenreDetail {
+        let cell = collectionView.dequeueReusableCell(
+          withReuseIdentifier: "GenreDetailCollectionViewCell", for: indexPath
+        ) as! GenreDetailCollectionViewCell
+
+        // Configure cell ui elements with view model data
+        cell.configure(with: genreModel)
+
+        return cell
       }
       return UICollectionViewCell()
     }
@@ -129,6 +139,7 @@ private extension MovieDetailViewController {
   }
   
   func applySnapshot(movieDetails: [DataSourceSection<DetailsSectionType>]) {
+    var snapshot = NSDiffableDataSourceSnapshot<DetailsSectionType, MovieDetails>()
     for dataSource in movieDetails {
       let sectionType: DetailsSectionType = dataSource.sectionType
       if snapshot.indexOfSection(sectionType) == nil {
@@ -170,5 +181,4 @@ extension MovieDetailViewController: UICollectionViewDelegateFlowLayout {
   func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
     return 0
   }
-  
 }

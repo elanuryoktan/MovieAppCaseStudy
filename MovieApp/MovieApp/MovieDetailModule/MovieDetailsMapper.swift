@@ -10,7 +10,7 @@ import UIKit
 
 // sourcery: AutoMockable
 protocol MovieDetailsMapping {
-  func movieDetails(domainModel: MovieDomainModel) -> [ DataSourceSection<DetailsSectionType>]
+  func movieDetails(domainModel: MovieDomainModel, genres: [Genre]) -> [ DataSourceSection<DetailsSectionType>]
 }
 
 final class MovieDetailsMapper: MovieDetailsMapping {
@@ -18,7 +18,7 @@ final class MovieDetailsMapper: MovieDetailsMapping {
     static let imageBaseURL = "https://image.tmdb.org/t/p/w500"
   }
 
-  func movieDetails(domainModel: MovieDomainModel) -> [ DataSourceSection<DetailsSectionType>] {
+  func movieDetails(domainModel: MovieDomainModel, genres: [Genre]) -> [ DataSourceSection<DetailsSectionType>] {
     var imageUrl: URL?
     if let path = domainModel.posterPath {
       imageUrl = URL(string: Constants.imageBaseURL + path)
@@ -27,6 +27,7 @@ final class MovieDetailsMapper: MovieDetailsMapping {
     return [
       DataSourceSection(rows: [PosterDetail(imageUrl: imageUrl)], sectionType: .poster),
       DataSourceSection(rows: getTitlemodels(domainModel: domainModel), sectionType: .title),
+      DataSourceSection(rows: getGenres(domainModel: domainModel, genres: genres), sectionType: .genre),
       DataSourceSection(rows: [getOverviewDetail(domainModel: domainModel)], sectionType: .overview)
     ]
   }
@@ -73,5 +74,18 @@ private extension MovieDetailsMapper {
         .font: UIFont.boldSystemFont(ofSize: 12.0)
       ])
     )
+  }
+  
+  func getGenres(domainModel: MovieDomainModel, genres: [Genre]) -> [GenreDetail] {
+    var genreTexts: [String] = []
+    domainModel.genreIds?.forEach({ genreId in
+      if let genreText = genres.filter({ $0.id == genreId }).first?.name {
+        genreTexts.append(genreText)
+      }
+    })
+    if genreTexts.count > 0 {
+      return [GenreDetail(genres: genreTexts)]
+    }
+    return []
   }
 }

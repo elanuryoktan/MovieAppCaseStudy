@@ -162,4 +162,15 @@ extension MovieListViewController: UICollectionViewDelegateFlowLayout {
       viewModel.onLoadNextPage()
     }
   }
+  
+  func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    let movieDetailViewController = MovieDetailViewController()
+    guard let movieDomainModel = viewModel.movieDomainModel(for: indexPath.row) else {
+      return
+    }
+    movieDetailViewController.movieDomainModel = movieDomainModel
+    movieDetailViewController.apiService = apiService
+    movieDetailViewController.mapper = MovieDetailsMapper()
+    self.navigationController?.pushViewController(movieDetailViewController, animated: true)
+  }
 }

@@ -14,6 +14,7 @@ protocol MovieLisViewModelling {
   func onViewSetUp()
   func onLoadNextPage()
   func movieViewModel(for index: Int) -> MovieViewModel?
+  func movieDomainModel(for index: Int) -> MovieDomainModel?
 }
 
 final class MovieListViewModel: MovieLisViewModelling {
@@ -21,6 +22,7 @@ final class MovieListViewModel: MovieLisViewModelling {
   var errorMessage = PublishSubject<(String, String)>()
 
   private var movieList: [MovieViewModel] = []
+  private var movieDomainModels: [MovieDomainModel] = []
   private var apiService: APIServicing
   private var mapper: MovieViewModelMapping
   private var currentPage: Int = 1
@@ -49,12 +51,22 @@ final class MovieListViewModel: MovieLisViewModelling {
     }
     return movieList[index]
   }
+  
+  func movieDomainModel(for index: Int) -> MovieDomainModel? {
+    guard index < movieDomainModels.count else {
+      return nil
+    }
+    return movieDomainModels[index]
+  }
 }
 
 private extension MovieListViewModel {
   func fetchMovies() {
     apiService.getPopularMovies(page: currentPage)
       .observe(on: MainScheduler.asyncInstance)
+      .do(onSuccess: { [weak self] movieListResponseModel in
+        self?.movieDomainModels.append(contentsOf: movieListResponseModel.results)
+      })
       .flatMap { movieListResponseModel -> Single<[MovieViewModel]> in
           .just( movieListResponseModel.results.map {
             self.mapper.movieViewModel(domainModel: $0)

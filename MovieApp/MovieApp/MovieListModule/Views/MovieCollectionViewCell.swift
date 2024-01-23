@@ -97,6 +97,7 @@ class MovieCollectionViewCell: UICollectionViewCell {
   
   override public func prepareForReuse() {
     super.prepareForReuse()
+    posterImageView.image = nil
   }
 
   func configure(with viewModel: MovieViewModel) {

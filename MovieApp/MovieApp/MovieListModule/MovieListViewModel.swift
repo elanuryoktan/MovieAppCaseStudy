@@ -10,6 +10,7 @@ import RxSwift
 
 protocol MovieLisViewModelling {
   var movies: PublishSubject<[MovieViewModel]> { get }
+  var errorMessage: PublishSubject<(String, String)> { get }
   func onViewSetUp()
   func onLoadNextPage()
   func movieViewModel(for index: Int) -> MovieViewModel?
@@ -17,7 +18,8 @@ protocol MovieLisViewModelling {
 
 final class MovieListViewModel: MovieLisViewModelling {
   var movies = PublishSubject<[MovieViewModel]>()
-  
+  var errorMessage = PublishSubject<(String, String)>()
+
   private var movieList: [MovieViewModel] = []
   private var apiService: APIServicing
   private var mapper: MovieViewModelMapping
@@ -64,8 +66,13 @@ private extension MovieListViewModel {
           self.movieList.append(contentsOf: movieList)
           movies.onNext(movieList)
         },
-        onFailure: { _ in
-          // TODO: create publish subject to set fail messages
+        onFailure: { [weak self] error in
+          guard let self = self else { return }
+          if let apiError = error as? APIService.ApiError {
+            self.errorMessage.onNext(("Unexpected Error", apiError.getErrorMessage()))
+          } else {
+            self.errorMessage.onNext(("Unexpected Error", "Please check your connection"))
+          }
         }
       )
       .disposed(by: disposeBag)

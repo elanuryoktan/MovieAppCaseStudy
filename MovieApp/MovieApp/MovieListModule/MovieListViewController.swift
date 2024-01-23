@@ -103,6 +103,25 @@ private extension MovieListViewController {
         applySnapshot(movies: movieList)
       }
       .disposed(by: disposeBag)
+    
+    viewModel.errorMessage
+      .observe(on: MainScheduler.asyncInstance)
+      .subscribe { [weak self] (message: (String, String)) in
+        guard let self = self else { return }
+        self.presentAlert(title: message.0, message: message.1, actionText: "OK")
+      }
+      .disposed(by: disposeBag)
+  }
+  
+  func presentAlert(
+    title: String,
+    message: String,
+    actionText: String,
+    handler: ((UIAlertAction) -> Void)? = nil
+  ) {
+    let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertController.Style.alert)
+    alert.addAction(UIAlertAction(title: actionText, style: UIAlertAction.Style.default, handler: handler))
+    present(alert, animated: true, completion: nil)
   }
 
   func applySnapshot(movies: [MovieViewModel]) {

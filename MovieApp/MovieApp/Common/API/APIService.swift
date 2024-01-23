@@ -20,6 +20,17 @@ final class APIService: APIServicing {
     case serverFailure
     case invalidKey
     case invalidResponse
+    
+    func getErrorMessage() -> String {
+      switch self {
+      case .serverFailure:
+        return "Server failure"
+      case .invalidKey:
+        return "Invalid api key, please check you have the right access"
+      case .invalidResponse:
+        return "Invalid reponse from API"
+      }
+    }
   }
   
   let apiKeyManager: ApiKeyManaging

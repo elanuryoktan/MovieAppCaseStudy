@@ -7,6 +7,7 @@
 
 import Foundation
 
+// sourcery: AutoMockable
 protocol MovieViewModelMapping {
   func movieViewModel(domainModel: MovieDomainModel) -> MovieViewModel
 }

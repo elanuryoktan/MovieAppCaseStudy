@@ -35,18 +35,32 @@ final class MovieDetailViewModel: MovieDetailViewModelling {
   }
   
   func loadDetails() {
-    // TODO: fetch genres
-    // TODO: fetch cast members
-    let dataSource = mapper.movieDetails(domainModel: domainModel, genres: [])
+    let dataSource = mapper.movieDetails(domainModel: domainModel, genres: [], castDetails: [])
     movieDetailsList.append(contentsOf: dataSource)
     movieDetails.onNext(dataSource)
     
+    // Fetch genres
     apiService.getMovieGenres()
       .observe(on: MainScheduler.asyncInstance)
       .subscribe(
         onSuccess: { [weak self] genreResponseModel in
           guard let self = self else { return }
-          let dataSource = mapper.movieDetails(domainModel: domainModel, genres: genreResponseModel.genres)
+          let dataSource = mapper.movieDetails(domainModel: domainModel, genres: genreResponseModel.genres, castDetails: [])
+          movieDetailsList.removeAll()
+          movieDetailsList.append(contentsOf: dataSource)
+          movieDetails.onNext(dataSource)
+        },
+        onFailure: { _ in }
+      )
+      .disposed(by: disposeBag)
+    
+    // Fetch cast members
+    apiService.getCastMembers(movieId: domainModel.id)
+      .observe(on: MainScheduler.asyncInstance)
+      .subscribe(
+        onSuccess: { [weak self] castResponse in
+          guard let self = self else { return }
+          let dataSource = mapper.movieDetails(domainModel: domainModel, genres: [], castDetails: castResponse.cast)
           movieDetailsList.removeAll()
           movieDetailsList.append(contentsOf: dataSource)
           movieDetails.onNext(dataSource)
@@ -66,6 +80,8 @@ final class MovieDetailViewModel: MovieDetailViewModelling {
       sectionType = .title
     } else if let _ = cell as? GenreDetailCollectionViewCell {
       sectionType = .genre
+    } else if let _ = cell as? CastDetailCollectionViewCell {
+      sectionType = .cast
     }
     
     guard let sectionType = sectionType else {

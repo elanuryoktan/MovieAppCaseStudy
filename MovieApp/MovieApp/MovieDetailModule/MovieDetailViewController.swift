@@ -15,6 +15,7 @@ enum DetailsSectionType: Int, CaseIterable {
   case overview
   case title
   case genre
+  case cast
 }
 
 final class MovieDetailViewController: UIViewController {
@@ -82,6 +83,7 @@ private extension MovieDetailViewController {
     movieDetailsCollectionView.register(TitleDetailCollectionViewCell.self, forCellWithReuseIdentifier: "TitleDetailCollectionViewCell")
     movieDetailsCollectionView.register(GenreDetailCollectionViewCell.self, forCellWithReuseIdentifier: "GenreDetailCollectionViewCell")
     movieDetailsCollectionView.register(OverviewCollectionViewCell.self, forCellWithReuseIdentifier: "OverviewCollectionViewCell")
+    movieDetailsCollectionView.register(CastDetailCollectionViewCell.self, forCellWithReuseIdentifier: "CastDetailCollectionViewCell")
 
     // Create data source for collection view
     dataSource = UICollectionViewDiffableDataSource<DetailsSectionType, MovieDetails>(
@@ -121,6 +123,15 @@ private extension MovieDetailViewController {
 
         // Configure cell ui elements with view model data
         cell.configure(with: genreModel)
+
+        return cell
+      } else if let castDetailModel = item as? CastDetail {
+        let cell = collectionView.dequeueReusableCell(
+          withReuseIdentifier: "CastDetailCollectionViewCell", for: indexPath
+        ) as! CastDetailCollectionViewCell
+
+        // Configure cell ui elements with view model data
+        cell.configure(with: castDetailModel)
 
         return cell
       }

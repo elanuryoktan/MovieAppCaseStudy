@@ -16,11 +16,12 @@ internal enum Router: URLRequestConvertible {
 
   case getPopularTvShows(apiKey: String, page: Int, language: String)
   case getGenres(apiKey: String, language: String)
+  case getCastMembers(apiKey: String, language: String, movieId: Int)
 
   func asURLRequest() throws -> URLRequest {
     var method: HTTPMethod {
       switch self {
-      case .getPopularTvShows, .getGenres:
+      case .getPopularTvShows, .getGenres, .getCastMembers:
           return .get
       }
     }
@@ -38,12 +39,17 @@ internal enum Router: URLRequestConvertible {
           "api_key": apiKey,
           "language": language
         ]
+      case .getCastMembers(let apiKey, let language, let movieId):
+        return [
+          "api_key": apiKey,
+          "language": language
+        ]
       }
     }()
 
     let headers: HTTPHeaders? = {
       switch self {
-      case .getPopularTvShows, .getGenres:
+      case .getPopularTvShows, .getGenres, .getCastMembers:
         return nil
       }
     }()
@@ -57,6 +63,8 @@ internal enum Router: URLRequestConvertible {
         relativePath = "movie/popular"
       case .getGenres:
         relativePath = "genre/movie/list"
+      case .getCastMembers(_, _, let movieId):
+        relativePath = "movie/\(movieId)/credits"
       }
       
       var url = URL(string: Constants.movieDBApiBaseURL)!

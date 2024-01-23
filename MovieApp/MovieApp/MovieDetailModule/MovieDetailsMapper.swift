@@ -10,7 +10,7 @@ import UIKit
 
 // sourcery: AutoMockable
 protocol MovieDetailsMapping {
-  func movieDetails(domainModel: MovieDomainModel, genres: [Genre]) -> [ DataSourceSection<DetailsSectionType>]
+  func movieDetails(domainModel: MovieDomainModel, genres: [Genre], castDetails: [CastMemberDomainModel]) -> [ DataSourceSection<DetailsSectionType>]
 }
 
 final class MovieDetailsMapper: MovieDetailsMapping {
@@ -18,7 +18,7 @@ final class MovieDetailsMapper: MovieDetailsMapping {
     static let imageBaseURL = "https://image.tmdb.org/t/p/w500"
   }
 
-  func movieDetails(domainModel: MovieDomainModel, genres: [Genre]) -> [ DataSourceSection<DetailsSectionType>] {
+  func movieDetails(domainModel: MovieDomainModel, genres: [Genre], castDetails: [CastMemberDomainModel]) -> [ DataSourceSection<DetailsSectionType>] {
     var imageUrl: URL?
     if let path = domainModel.posterPath {
       imageUrl = URL(string: Constants.imageBaseURL + path)
@@ -28,7 +28,8 @@ final class MovieDetailsMapper: MovieDetailsMapping {
       DataSourceSection(rows: [PosterDetail(imageUrl: imageUrl)], sectionType: .poster),
       DataSourceSection(rows: getTitlemodels(domainModel: domainModel), sectionType: .title),
       DataSourceSection(rows: getGenres(domainModel: domainModel, genres: genres), sectionType: .genre),
-      DataSourceSection(rows: [getOverviewDetail(domainModel: domainModel)], sectionType: .overview)
+      DataSourceSection(rows: [getOverviewDetail(domainModel: domainModel)], sectionType: .overview),
+      DataSourceSection(rows: castModels(cast: castDetails), sectionType: .cast)
     ]
   }
 }
@@ -87,5 +88,24 @@ private extension MovieDetailsMapper {
       return [GenreDetail(genres: genreTexts)]
     }
     return []
+  }
+  
+  func castModels(cast: [CastMemberDomainModel]) -> [CastDetail] {
+    var castModels: [CastDetail] = []
+    cast.forEach { castDomainModel in
+      var imageUrl: URL?
+      if let path = castDomainModel.profilePath {
+        imageUrl = URL(string: Constants.imageBaseURL + path)
+      }
+      if let name = castDomainModel.name {
+        let viewModel = CastDetail(
+          name: name,
+          character: castDomainModel.character ?? "",
+          imageUrl: imageUrl
+        )
+        castModels.append(viewModel)
+      }
+    }
+    return castModels
   }
 }

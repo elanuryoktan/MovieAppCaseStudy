@@ -13,6 +13,7 @@ import RxSwift
 protocol APIServicing {
   func getPopularMovies(page: Int) -> Single<PopularMoviesResponseModel>
   func getMovieGenres() -> Single<GenreResponseModel>
+  func getCastMembers(movieId: Int) -> Single<CastMemebersResponseModel>
 }
 
 final class APIService: APIServicing {
@@ -95,6 +96,38 @@ final class APIService: APIServicing {
           switch event {
           case .success(let genreResponse):
             single(.success(genreResponse))
+          case .failure(let error):
+            single(.failure(error))
+          }
+        }
+      }
+      return Disposables.create()
+    }
+  }
+  
+  // Used to get cast members via using Movie Database API
+  func getCastMembers(movieId: Int) -> Single<CastMemebersResponseModel> {
+    return Single.create { single in
+      self.apiKeyManager.tmdbApiKey { [weak self] apiKey in
+        guard let self = self else {
+          return
+        }
+        guard let apiKey = apiKey else {
+          return single(.failure(ApiError.invalidKey))
+        }
+        
+        let result: Single<CastMemebersResponseModel> = self.buildRequest(
+          convertible: Router.getCastMembers(
+            apiKey: apiKey,
+            language: Locale.preferredLanguages[0],
+            movieId: movieId
+          )
+        )
+        
+        let _ = result.subscribe { event in
+          switch event {
+          case .success(let castResponse):
+            single(.success(castResponse))
           case .failure(let error):
             single(.failure(error))
           }
